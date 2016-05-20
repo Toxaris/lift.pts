@@ -1,0 +1,42 @@
+language fomega;
+
+/* the constructive lift monad,
+ * following a blog post by Krishnaswami:
+ *
+ * http://semantic-domain.blogspot.de/2011/06/constructive-lift-monad.html
+ */
+module Lift;
+
+import Cat;
+import Sum;
+import Nu;
+import Unit;
+
+/* pattern functor for T, action on objects */
+TF (A : *) : Functor = lambda X . Sum A X;
+
+/* pattern functor for T, action on arrows. */
+tf (A : *) : Map (TF A) =
+  lambda B C f . sum A B A C (id A) f;
+
+/* constructive lift monad, action on objects */
+T : Functor = lambda A . Nu (TF A);
+
+/* bottom element */
+bot (A : *) : Hom Unit (T A) =
+  unfold (TF A) Unit (inj2 A Unit);
+
+/* fixed point of functions between lifted values */
+fix (A : *) (f : T A -> T A) : Hom Unit (T A) =
+  comp Unit (T A) (T A)
+    (unfold (TF A) (T A)
+      (comp (T A) (T A) (TF A (T A))
+        (unroll (TF A) (tf A))
+        f))
+    (bot A);
+
+/* MODULE EXPORTS */
+
+export T;
+export bot;
+export fix;
