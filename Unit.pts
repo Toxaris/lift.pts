@@ -1,0 +1,28 @@
+language fomega;
+
+/* unit type */
+module Unit;
+
+import Cat;
+
+/* PRIMITIVES */
+
+/* unit type */
+Unit : * =
+  Pi R : * . R -> R;
+
+/* unit constructor */
+unit : Unit =
+  lambda R r . r;
+
+/* DERIVED OPERATIONS */
+
+/* the unique arrow from every object to unit */
+ignore (A : *) : Hom A Unit =
+  lambda a . unit;
+
+/* MODULE EXPORTS */
+
+export Unit;
+export unit;
+export ignore;
