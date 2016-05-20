@@ -1,0 +1,26 @@
+language fomega;
+
+/* existential quantification */
+module Exists;
+
+import Cat;
+
+/* PRIMITIVES */
+
+/* existential quantification */
+Exists (F : * -> *) : * =
+  Pi R : * . (Pi X : * . F X -> R) -> R;
+
+/* packing up a value as an existential */
+pack (F : * -> *) (A : *) : Hom (F A) (Exists F) =
+  lambda fa R k . k A fa;
+
+/* unpacking a value from an existential */
+unpack (F : * -> *) (B : *) : (Pi A : * . Hom (F A) B) -> Hom (Exists F) B =
+  lambda k p . p B k;
+
+/* MODULE EXPORTS */
+
+export Exists;
+export pack;
+export unpack;
