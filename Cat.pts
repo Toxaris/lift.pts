@@ -36,6 +36,37 @@ Bifunctor = Obj -> Obj -> Obj;
 Bimap (F : Bifunctor) : * =
   Pi A B C D : Obj . Hom A C -> Hom B D -> Hom (F A B) (F C D);
 
+/* MONADS */
+
+/* type of monadic return */
+Return (F : Functor) : * =
+  Pi A : Obj . Hom A (F A);
+
+/* type of monadic bind */
+Bind (F : Functor) : * =
+  Pi A B : Obj . Hom A (F B) -> Hom (F A) (F B);
+
+/* type of monadic join */
+Join (F : Functor) : * =
+  Pi A : Obj . Hom (F (F A)) (F A);
+
+/* bind in terms of map and join */
+bind (F : Functor) (map : Map F) (join: Join F) : Bind F =
+  lambda A B f .
+    comp (F A) (F (F B)) (F B)
+      (join B)
+      (map A (F B) f);
+
+/* map in terms of bind and return */
+map (F : Functor) (return : Return F) (bind : Bind F) : Map F =
+  lambda A B f .
+    bind A B (comp A B (F B) (return B) f);
+
+/* join in terms of bind and return */
+join (F : Functor) (return : Return F) (bind : Bind F) : Join F =
+  lambda A .
+    bind (F A) A (id (F A));
+
 /* MODULE EXPORTS */
 
 export Obj;
@@ -46,3 +77,9 @@ export Functor;
 export Map;
 export Bifunctor;
 export Bimap;
+export Return;
+export Bind;
+export Join;
+export bind;
+export map;
+export join;
