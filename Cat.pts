@@ -1,0 +1,48 @@
+language fomega;
+
+/* the category of fomega types and functions. */
+module Cat;
+
+/* OBJECTS AND ARROWS */
+
+/* objects are types. */
+Obj = *;
+
+/* arrows are functions. */
+Hom (A B : Obj) : * =
+  A -> B;
+
+/* identity arrows. */
+id (A : Obj) : Hom A A =
+  lambda a . a;
+
+/* arrow composition. */
+comp (A B C : Obj) : Hom B C -> Hom A B -> Hom A C =
+  lambda f g a . f (g a);
+
+/* FUNCTORS */
+
+/* action of functors on objects */
+Functor = Obj -> Obj;
+
+/* action of functors on arrows */
+Map (F : Functor) : * =
+  Pi A B : Obj . Hom A B -> Hom (F A) (F B);
+
+/* action of bifunctors on objects */
+Bifunctor = Obj -> Obj -> Obj;
+
+/* action of bifunctors on arrows */
+Bimap (F : Bifunctor) : * =
+  Pi A B C D : Obj . Hom A C -> Hom B D -> Hom (F A B) (F C D);
+
+/* MODULE EXPORTS */
+
+export Obj;
+export Hom;
+export id;
+export comp;
+export Functor;
+export Map;
+export Bifunctor;
+export Bimap;
