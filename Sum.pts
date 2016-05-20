@@ -1,0 +1,41 @@
+language fomega;
+
+/* sum construction */
+module Sum;
+
+import Cat;
+
+/* PRIMITIVES */
+
+/* sum bifunctor, action on objects. */
+Sum : Bifunctor =
+  lambda A B . Pi R : * . (A -> R) -> (B -> R) -> R;
+
+/* injection into the left component of a sum. */
+inj1 (A B : Obj) : Hom A (Sum A B) =
+  lambda a R k1 k2 . k1 a;
+
+/* injection into the right component of a sum. */
+inj2 (A B : Obj) : Hom B (Sum A B) =
+  lambda b R k1 k2 . k2 b;
+
+/* case analysis. */
+prj (A B C : Obj) : Hom A C -> Hom B C -> Hom (Sum A B) C =
+  lambda a2c b2c ab . ab C a2c b2c;
+
+/* DERIVED OPERATIONS */
+
+/* sum bifunctor, action on arrows. */
+sum : Bimap Sum =
+  lambda A B C D a2c b2d .
+    prj A B (Sum C D)
+      (comp A C (Sum C D) (inj1 C D) a2c)
+      (comp B D (Sum C D) (inj2 C D) b2d);
+
+/* MODULE EXPORTS */
+
+export Sum;
+export sum;
+export inj1;
+export inj2;
+export prj;

@@ -1,0 +1,46 @@
+language fomega;
+
+/* product construction */
+module Product;
+
+import Cat;
+
+/* PRIMITIVES */
+
+/* product bifunctor, action on objects. */
+Product : Bifunctor =
+  lambda A B . Pi R : * . (A -> B -> R) -> R;
+
+/* tuple construction */
+pair (A B : Obj) (a : A) (b : B) : Product A B =
+  lambda R k . k a b;
+
+/* projection of the first componenent of the product. */
+prj1 (A B : Obj) : Hom (Product A B) A =
+  lambda ab . ab A (lambda a b . a);
+
+/* projection of the second componenent of the product. */
+prj2 (A B : Obj) : Hom (Product A B) B =
+  lambda ab . ab B (lambda a b . b);
+
+/** DERIVED OPERATIONS */
+
+/* injection into the product. */
+inj (A B C : Obj) (a2b : Hom A B) (a2c : Hom A C) : Hom A (Product B C) =
+  lambda a . pair B C (a2b a) (a2c a);
+
+/* product bifunctor, action on arrows. */
+product : Bimap Product =
+  lambda A B C D a2c b2d .
+    inj (Product A B) C D
+      (comp (Product A B) A C a2c (prj1 A B))
+      (comp (Product A B) B D b2d (prj2 A B));
+
+/* MODULE EXPORTS */
+
+export Product;
+export product;
+export inj;
+export prj1;
+export prj2;
+export pair;
