@@ -1,0 +1,38 @@
+language fomega;
+
+/* greatest fixed points by co-church encoding */
+module Nu;
+
+import Cat;
+import Product;
+import Exists;
+
+/* PRIMITIVES */
+
+/* coalgebras */
+Coalg (F : Functor) (A : *) : * =
+  Hom A (F A);
+
+/* reusable part of Nu */
+NuF (F : Functor) (X : *) = Product (Coalg F X) X;
+
+/* greatest fixed point */
+Nu (F : Functor) = Exists (NuF F);
+
+/* unfolding a coalgebra */
+unfold (F : Functor) (A : *) : Coalg F A -> Hom A (Nu F) =
+  lambda coalg a . pack (NuF F) A (pair (Coalg F A) A coalg a);
+
+/* exposing one level of structure */
+unroll (F : Functor) (mapF : Map F) : Hom (Nu F) (F (Nu F)) =
+  unpack (NuF F) (F (Nu F)) (lambda X p .
+    p (F (Nu F)) (lambda coalg x .
+      mapF X (Nu F)
+        (lambda x . unfold F X coalg x)
+        (coalg x)));
+
+/* MODULE EXPORTS */
+
+export Nu;
+export unfold;
+export unroll;
