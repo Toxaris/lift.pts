@@ -1,0 +1,10 @@
+--langdef=LPTS
+--langmap=LPTS:.lpts
+--regex-LPTS=/^>[ \t]([^][ \t.:=;()$]+)[ \t]*(\([^()]*\)[ \t]*)*([:=]|$)/\1/v,values/
+--regex-LPTS=/^>[ \t]export ([^][ \t.:=;()$]+)[ \t]*;/\1/e,exports/
+--regex-LPTS=/^>[ \t]module[ \t]+([^][ \t.:=;()$]+(\.[^][ \t.:=;()$]+)*)[ \t]*;/\1/m,modules/
+--langdef=PTS
+--langmap=PTS:.pts
+--regex-PTS=/^([^][ \t.:=;()$]+)[ \t]*(\([^()]*\)[ \t]*)*([:=]|$)/\1/v,values/
+--regex-PTS=/^export ([^][ \t.:=;()$]+)[ \t]*;/\1/e,exports/
+--regex-PTS=/^module[ \t]+([^][ \t.:=;()$]+(\.[^][ \t.:=;()$]+)*)[ \t]*;/\1/m,modules/
